@@ -64,7 +64,7 @@ export const operationsRoute = async (fastify: FastifyInstance, opts: FastifyPlu
     },
     async (request, reply) => {
       const { $id } = request.params;
-      const resp = await opts.paymentService.modifyPayment({
+      const resp = await opts.giftCardService.modifyPayment({
         paymentId: $id,
         data: request.body,
       });
