@@ -3,10 +3,11 @@ import {
   SessionQueryParamAuthenticationHook,
 } from '@commercetools/connect-payments-sdk';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import {} from '../dtos/voucherify-giftcards.dto';
+// import {} from '../dtos/voucherify-giftcards.dto';
+import { VoucherifyGiftCardService } from '../services/voucherify-giftcard.service';
 
 type RoutesOptions = {
-  // giftCardService: VoucherifyGiftCardService;
+  giftCardService: VoucherifyGiftCardService;
   sessionHeaderAuthHook: SessionHeaderAuthenticationHook;
   sessionQueryParamAuthHook: SessionQueryParamAuthenticationHook;
 };

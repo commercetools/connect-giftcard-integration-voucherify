@@ -13,14 +13,14 @@ import {
   PaymentIntentResponseSchemaDTO,
 } from '../dtos/operations/payment-intents.dto';
 import { StatusResponseSchema, StatusResponseSchemaDTO } from '../dtos/operations/status.dto';
-// import { AbstractGiftCardService } from '../services/abstract-giftcard.service';
+import { AbstractGiftCardService } from '../services/abstract-giftcard.service';
 
 type OperationRouteOptions = {
   sessionHeaderAuthHook: SessionHeaderAuthenticationHook;
   oauth2AuthHook: Oauth2AuthenticationHook;
   jwtAuthHook: JWTAuthenticationHook;
   authorizationHook: AuthorityAuthorizationHook;
-  // giftCardService: AbstractPaymentService;
+  giftCardService: AbstractGiftCardService;
 };
 
 export const operationsRoute = async (fastify: FastifyInstance, opts: FastifyPluginOptions & OperationRouteOptions) => {
@@ -35,7 +35,7 @@ export const operationsRoute = async (fastify: FastifyInstance, opts: FastifyPlu
       },
     },
     async (request, reply) => {
-      const status = await opts.paymentService.status();
+      const status = await opts.giftCardService.status();
       reply.code(200).send(status);
     },
   );
