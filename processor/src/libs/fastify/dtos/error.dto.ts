@@ -31,6 +31,20 @@ export const AuthErrorResponse = Type.Composite([
   }),
 ]);
 
+export const VoucherifyCustomErrorResponse = Type.Object({
+  status: Type.Object({
+    state: Type.String(),
+    errors: Type.Optional(Type.Array(ErrorObject)),
+  }),
+  amount: Type.Optional(
+    Type.Object({
+      centAmount: Type.Integer(),
+      currencyCode: Type.String(),
+    }),
+  ),
+});
+
 export type TErrorObject = Static<typeof ErrorObject>;
 export type TErrorResponse = Static<typeof ErrorResponse>;
 export type TAuthErrorResponse = Static<typeof AuthErrorResponse>;
+export type TVoucherifyCustomErrorResponse = Static<typeof VoucherifyCustomErrorResponse>;

@@ -20,6 +20,7 @@ import {
   PaymentModificationStatus,
 } from '../dtos/operations/payment-intents.dto';
 import { log } from '../libs/logger';
+import { BalanceResponseSchemaDTO } from '../dtos/voucherify-giftcards.dto';
 
 export abstract class AbstractGiftCardService {
   protected ctCartService: CommercetoolsCartService;
@@ -41,6 +42,18 @@ export abstract class AbstractGiftCardService {
    * @returns
    */
   abstract status(): Promise<StatusResponse>;
+
+  /**
+   * Validate Code and return balance
+   * @returns
+   */
+  abstract balance(code: string): Promise<BalanceResponseSchemaDTO>;
+
+  /**
+   * Redeem Code
+   * @returns
+   */
+  abstract redeem(): void;
 
   /**
    * Capture payment

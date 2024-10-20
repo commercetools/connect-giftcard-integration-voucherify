@@ -17,6 +17,11 @@ import { config } from '../config/config';
 import { appLogger, paymentSDK } from '../payment-sdk';
 import { AbstractGiftCardService } from './abstract-giftcard.service';
 import { VoucherifyAPI } from '../clients/voucherify.client';
+import { BalanceResponseSchemaDTO } from '../dtos/voucherify-giftcards.dto';
+import { VoucherifyApiError, VoucherifyCustomError } from '../errors/voucherify-api.error';
+import { log } from '../libs/logger';
+import { BalanceConverter } from './converters/balance-converter';
+import { getCartIdFromContext } from '../libs/fastify/context/context';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const packageJSON = require('../../package.json');
@@ -28,10 +33,20 @@ export type VoucherifyGiftCardServiceOptions = {
 };
 
 export class VoucherifyGiftCardService extends AbstractGiftCardService {
+  private balanceConverter: BalanceConverter;
   constructor(opts: VoucherifyGiftCardServiceOptions) {
     super(opts.ctCartService, opts.ctPaymentService, opts.ctOrderService);
+    this.balanceConverter = new BalanceConverter();
   }
 
+  /**
+   * Get status
+   *
+   * @remarks
+   * Implementation to provide mocking status of external systems
+   *
+   * @returns Promise with mocking data containing a list of status from different external systems
+   */
   async status(): Promise<StatusResponse> {
     const handler = await statusHandler({
       timeout: config.healthCheckTimeout,
@@ -76,11 +91,55 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
       metadataFn: async () => ({
         name: packageJSON.name,
         description: packageJSON.description,
-        '@voucherify/sdk': packageJSON.dependencies['@voucherify/sdk'],
       }),
     })();
 
     return handler.body;
+  }
+
+  async balance(code: string): Promise<BalanceResponseSchemaDTO> {
+    const ctCart = await this.ctCartService.getCart({
+      id: getCartIdFromContext(),
+    });
+    const amountPlanned = await this.ctCartService.getPaymentAmount({ cart: ctCart });
+
+    try {
+      const validationResult = await VoucherifyAPI().validations.validateStackable({
+        redeemables: [
+          {
+            object: 'voucher',
+            id: code,
+          },
+        ],
+        order: {
+          amount: amountPlanned.centAmount,
+        },
+      });
+
+      if (validationResult.valid) {
+        return this.balanceConverter.valid(validationResult.redeemables?.[0].result);
+      }
+
+      return this.balanceConverter.invalid(validationResult.redeemables?.[0].result);
+
+      // TODO: check for currency difference
+    } catch (err) {
+      log.error('Error fetching voucher', { error: err });
+      if (err instanceof VoucherifyCustomError || err instanceof VoucherifyApiError) {
+        throw err;
+      }
+
+      throw new ErrorGeneral('Internal Server Error', {
+        privateMessage: 'internal error making a call to voucherify',
+        cause: err,
+      });
+    }
+  }
+
+  async redeem(): Promise<void> {
+    throw new ErrorGeneral('operation not supported', {
+      privateMessage: "connector doesn't support redeem operation yet",
+    });
   }
 
   /**

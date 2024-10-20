@@ -41,6 +41,7 @@ export const getCtSessionIdFromContext = (): string => {
 
 export const getCartIdFromContext = (): string => {
   const authentication = getRequestContext().authentication as SessionAuthentication;
+  console.log(authentication);
   return authentication?.getPrincipal().cartId;
 };
 
