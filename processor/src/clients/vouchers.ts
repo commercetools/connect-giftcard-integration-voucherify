@@ -1,3 +1,5 @@
+// copied over from https://github.com/voucherifyio/voucherify-js-sdk SdK seems to be poorly managed and not in par with API
+
 import * as T from './types/vouchers';
 
 import { encode } from './helpers';

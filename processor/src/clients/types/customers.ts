@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Legacy code
+// copied over from https://github.com/voucherifyio/voucherify-js-sdk SdK seems to be poorly managed and not in par with API
 import { DiscountUnit, DiscountAmount, DiscountPercent, DiscountFixed } from './discount-vouchers';
 
 export interface SimpleCustomer {

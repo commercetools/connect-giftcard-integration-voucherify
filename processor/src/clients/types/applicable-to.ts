@@ -1,3 +1,4 @@
+// copied over from https://github.com/voucherifyio/voucherify-js-sdk SdK seems to be poorly managed and not in par with API
 export type ApplicableToEffect = 'APPLY_TO_EVERY' | 'APPLY_TO_CHEAPEST' | 'APPLY_TO_MOST_EXPENSIVE';
 
 export interface ApplicableTo {

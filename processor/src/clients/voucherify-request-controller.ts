@@ -11,9 +11,6 @@ export interface RequestControllerOptions {
   exposeErrorCause: boolean;
 }
 
-/**
- * @internal
- */
 export class RequestController {
   private baseURL: string;
   private basePath: string;
