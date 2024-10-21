@@ -104,6 +104,15 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
     const amountPlanned = await this.ctCartService.getPaymentAmount({ cart: ctCart });
 
     try {
+      // TODO: fast implementation, test this on postman as well
+      if (config.voucherifyCurrency !== amountPlanned.currencyCode) {
+        throw new VoucherifyCustomError({
+          message: 'cart and voucher currency do not match',
+          code: 400,
+          key: 'CurrencyNotMatch',
+        });
+      }
+
       const validationResult = await VoucherifyAPI().validations.validateStackable({
         redeemables: [
           {

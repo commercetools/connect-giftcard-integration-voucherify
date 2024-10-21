@@ -17,6 +17,7 @@ export const config = {
   voucherifyApplicationId: process.env.VOUCHERIFY_APPLICATION_ID || '',
   voucherifySecretKey: process.env.VOUCHERIFY_SECRET_KEY || '',
   voucherifyApiURL: process.env.VOUCHERIFY_API_URL || undefined,
+  voucherifyCurrency: process.env.VOUCHERIFY_CURRENCY || '',
 };
 
 export const getConfig = () => {
