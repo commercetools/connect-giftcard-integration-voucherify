@@ -109,7 +109,6 @@ export function Voucherify(options: VoucherifyOptions) {
     baseURL: options.apiUrl ?? 'https://api.voucherify.io',
     headers,
     exposeErrorCause: options.exposeErrorCause ?? false,
-    timeoutMs: options.timeoutMs ?? 0,
   });
 
   const vouchers = new Vouchers(client);

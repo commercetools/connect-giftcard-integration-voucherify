@@ -26,7 +26,7 @@ export class BalanceConverter {
           },
           {
             privateFields: {
-              details: opts?.error?.details,
+              ...opts?.details,
             },
           },
         );

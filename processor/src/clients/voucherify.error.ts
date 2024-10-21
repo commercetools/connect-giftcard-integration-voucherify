@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { AxiosError } from 'axios';
 
 /**
  * @internal
@@ -15,9 +14,9 @@ export class VoucherifyError extends Error {
   public related_object_type?: string;
   public related_object_total?: number;
   public error?: { message: string };
-  public cause?: AxiosError;
+  public cause?: any;
 
-  constructor(statusCode: number, body?: unknown, axiosError?: AxiosError) {
+  constructor(statusCode: number, body?: unknown, axiosError?: any) {
     body = body ?? {};
 
     const message = (<any>body)?.message || generateMessage(body, statusCode);
