@@ -1,4 +1,11 @@
-import { Amount, BalanceType, BaseOptions, GiftCardComponent, GiftCardOptions } from '../providers/definitions';
+import {
+  Amount,
+  BalanceType,
+  BaseOptions,
+  GiftCardComponent,
+  GiftCardOptions,
+  PaymentResult,
+} from '../providers/definitions';
 import { BaseComponentBuilder, DefaultComponent } from './definitions';
 import { addFormFieldsEventListeners, fieldIds, getInput } from './utils';
 import inputFieldStyles from '../style/inputField.module.scss';
@@ -57,14 +64,13 @@ export class FormComponent extends DefaultComponent {
           throw err;
         });
     }
+
     try {
       const giftCardCode = getInput(fieldIds.code).value.replace(/\s/g, '');
       const requestBody = {
         redeemAmount: params.amount,
         code: giftCardCode,
       };
-      console.log('===requestBody===');
-      console.log(requestBody);
       const fetchBalanceURL = this.baseOptions.processorUrl.endsWith('/')
         ? `${this.baseOptions.processorUrl}redemption}`
         : `${this.baseOptions.processorUrl}/redemption`;
@@ -76,14 +82,18 @@ export class FormComponent extends DefaultComponent {
         },
         body: JSON.stringify(requestBody),
       });
-      const result = await response.json();
-      console.log(result);
-      return result;
+      const redeemResult = await response.json();
+      console.log(redeemResult);
+      const paymentResult: PaymentResult = {
+        isSuccess: redeemResult.result,
+        paymentReference: redeemResult.paymentId,
+      };
+
+      this.baseOptions.onComplete(paymentResult);
     } catch (err) {
       this.baseOptions.onError(err);
     }
-
-    return null;
+    return;
   }
 
   mount(selector: string): void {
