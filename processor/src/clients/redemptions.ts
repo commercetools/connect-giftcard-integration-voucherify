@@ -1,7 +1,6 @@
 import * as T from './types/redemptions';
 
 import { encode, isObject, isString } from './helpers';
-
 import type { RequestController } from './voucherify-request-controller';
 
 export class Redemptions {
@@ -28,5 +27,12 @@ export class Redemptions {
       payload,
       queryParams,
     );
+  }
+
+  /**
+   * @see https://docs.voucherify.io/reference/redeem-stacked-discounts
+   */
+  public redeemStackable(params: T.RedemptionsRedeemStackableParams) {
+    return this.client.post<T.RedemptionsRedeemStackableResponse>(`/redemptions`, params);
   }
 }

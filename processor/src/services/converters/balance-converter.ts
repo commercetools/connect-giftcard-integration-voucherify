@@ -1,4 +1,5 @@
 import { StackableRedeemableResultResponse } from '../../clients/types/stackable';
+
 import { getConfig } from '../../config/config';
 import { BalanceResponseSchemaDTO } from '../../dtos/voucherify-giftcards.dto';
 import { VoucherifyApiError, VoucherifyCustomError } from '../../errors/voucherify-api.error';
@@ -7,6 +8,7 @@ export class BalanceConverter {
   public invalid(opts: StackableRedeemableResultResponse | undefined): BalanceResponseSchemaDTO {
     switch (opts?.error?.key) {
       // HINT: chose to use `.details` here because it contains more information
+
       case 'voucher_expired':
         throw new VoucherifyCustomError({
           message: opts.error?.details || 'Gift card is expired',

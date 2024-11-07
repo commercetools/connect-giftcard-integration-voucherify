@@ -16,4 +16,18 @@ export const BalanceResponseSchema = Type.Object({
   amount: AmountSchema,
 });
 
+export const RedeemRequestSchema = Type.Object({
+  code: Type.String(),
+  redeemAmount: AmountSchema,
+});
+
+export const RedeemResponseSchema = Type.Object({
+  result: Type.String(),
+  paymentId: Type.String(),
+  redemptionId: Type.String(),
+});
+
+export type RedeemRequestDTO = Static<typeof RedeemRequestSchema>;
+export type RedeemResponseDTO = Static<typeof RedeemResponseSchema>;
+
 export type BalanceResponseSchemaDTO = Static<typeof BalanceResponseSchema>;
