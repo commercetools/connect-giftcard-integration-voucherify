@@ -4,15 +4,8 @@ import {
 } from '@commercetools/connect-payments-sdk';
 import { FastifyInstance, FastifyPluginOptions } from 'fastify';
 import { VoucherifyGiftCardService } from '../services/voucherify-giftcard.service';
-import {
-  BalanceResponseSchema,
-  BalanceResponseSchemaDTO,
-  RedeemRequestDTO,
-  RedeemResponseSchema,
-  RedeemResponseDTO,
-} from '../dtos/voucherify-giftcards.dto';
+import { BalanceResponseSchema, BalanceResponseSchemaDTO } from '../dtos/voucherify-giftcards.dto';
 import { Type } from '@sinclair/typebox';
-import { AmountSchema } from '../dtos/operations/payment-intents.dto';
 
 type RoutesOptions = {
   giftCardService: VoucherifyGiftCardService;
@@ -43,33 +36,6 @@ export const voucherifyGiftCardServiceRoutes = async (
     },
     async (request, reply) => {
       const res = await opts.giftCardService.balance(request.params.code);
-      return reply.status(200).send(res);
-    },
-  );
-
-  fastify.post<{ Body: RedeemRequestDTO; Reply: RedeemResponseDTO }>(
-    '/redemption',
-    {
-      preHandler: [opts.sessionHeaderAuthHook.authenticate()],
-      schema: {
-        body: {
-          type: 'object',
-          properties: {
-            code: Type.String(),
-            redeemAmount: AmountSchema,
-          },
-          required: ['code', 'redeemAmount'],
-        },
-        response: {
-          200: RedeemResponseSchema,
-        },
-      },
-    },
-    async (request, reply) => {
-      const res = await opts.giftCardService.redeem({
-        data: request.body,
-      });
-
       return reply.status(200).send(res);
     },
   );

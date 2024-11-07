@@ -12,16 +12,15 @@ import {
   rollbackVouchersRedemptionOk,
   validateVouchersNotOk,
   validateVouchersOk,
-  redeemVouchersOk,
 } from '../mocks/voucherify';
 import * as StatusHandler from '@commercetools/connect-payments-sdk/dist/api/handlers/status.handler';
 import * as Config from '../../src/config/config';
 import { mockRequest } from '../mocks/utils';
 import { ModifyPayment, StatusResponse } from '../../src/services/types/operation.type';
 import { DefaultCartService } from '@commercetools/connect-payments-sdk/dist/commercetools/services/ct-cart.service';
-import { getCartOK, getPaymentResultOk, updatePaymentResultOk, createPaymentResultOk } from '../mocks/coco';
+import { getCartOK, getPaymentResultOk, updatePaymentResultOk } from '../mocks/coco';
 import { DefaultPaymentService } from '@commercetools/connect-payments-sdk/dist/commercetools/services/ct-payment.service';
-import { VoucherifyCustomError } from '../../src/errors/voucherify-api.error';
+
 interface FlexibleConfig {
   [key: string]: string | number | undefined; // Adjust the type according to your config values
 }
@@ -98,7 +97,6 @@ describe('voucherify-giftcard.service', () => {
     // jest.spyOn(DefaultCartService.prototype, 'getCart').mockResolvedValue(getCartOK());
 
     const result = await giftcardService.balance('some-code');
-
     expect(result?.status.state).toStrictEqual('Valid');
     expect(result?.amount.currencyCode).toStrictEqual('USD');
   });
@@ -109,51 +107,6 @@ describe('voucherify-giftcard.service', () => {
 
     const result = giftcardService.balance('some-code');
     await expect(result).rejects.toThrowError('voucher with given code does not exist');
-  });
-
-  test('redeem OK', async () => {
-    setupMockConfig({ voucherifyCurrency: 'USD' });
-    mockServer.use(mockRequest('https://api.voucherify.io', `/v1/redemptions`, 200, redeemVouchersOk));
-
-    jest.spyOn(DefaultPaymentService.prototype, 'createPayment').mockResolvedValue(createPaymentResultOk);
-    jest.spyOn(DefaultCartService.prototype, 'addPayment').mockResolvedValue(getCartOK());
-    jest.spyOn(DefaultPaymentService.prototype, 'updatePayment').mockResolvedValue(updatePaymentResultOk);
-
-    const result = await giftcardService.redeem({
-      data: {
-        code: '34567',
-        redeemAmount: {
-          centAmount: 1,
-          currencyCode: 'USD',
-        },
-      },
-    });
-    expect(result.result).toStrictEqual('Success');
-    expect(result.redemptionId).toStrictEqual('REDEMPTION_ID');
-    expect(result.paymentId).toStrictEqual('123456');
-  });
-
-  test('redeem not OK', async () => {
-    setupMockConfig({ voucherifyCurrency: 'EUR' });
-    mockServer.use(mockRequest('https://api.voucherify.io', `/v1/redemptions`, 200, redeemVouchersOk));
-
-    jest.spyOn(DefaultCartService.prototype, 'getCart').mockResolvedValue(getCartOK());
-
-    try {
-      await giftcardService.redeem({
-        data: {
-          code: '34567',
-          redeemAmount: {
-            centAmount: 1,
-            currencyCode: 'USD',
-          },
-        },
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(VoucherifyCustomError);
-      const voucherifyCustomError = error as VoucherifyCustomError;
-      expect(voucherifyCustomError.code).toEqual('CurrencyNotMatch');
-    }
   });
 
   describe('modifyPayment', () => {

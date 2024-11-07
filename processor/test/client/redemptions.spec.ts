@@ -2,9 +2,9 @@ import { describe, test, expect, afterEach, afterAll, beforeEach, jest, beforeAl
 import { voucherifyClient as client } from './client';
 import { setupServer } from 'msw/node';
 import { mockRequest } from '../mocks/utils';
-import { rollbackVouchersRedemptionOk, redeemVouchersOk } from '../mocks/voucherify';
+import { rollbackVouchersRedemptionOk } from '../mocks/voucherify';
 import { randomUUID } from 'crypto';
-import { RedemptionsRedeemStackableParams } from '../../src/clients/types/redemptions';
+
 describe('Redemptions API', () => {
   const mockServer = setupServer();
 
@@ -27,29 +27,6 @@ describe('Redemptions API', () => {
     mockServer.close();
   });
 
-  describe('voucher redemption', () => {
-    test('should return required properties', async () => {
-      const redemptionStackableRequestParam: RedemptionsRedeemStackableParams = {
-        redeemables: [
-          {
-            object: 'voucher',
-            id: '123456',
-            gift: {
-              credits: 100,
-            },
-          },
-        ],
-        order: {
-          amount: 2000,
-        },
-      };
-      mockServer.use(mockRequest('https://api.voucherify.io', `/v1/redemptions`, 200, redeemVouchersOk));
-
-      const response = await client.redemptions.redeemStackable(redemptionStackableRequestParam);
-      expect(response.redemptions).toHaveLength(1);
-      expect(response.redemptions[0].result).toBe('SUCCESS');
-    });
-  });
   describe('rollback voucher redemption', () => {
     test('should return required properties', async () => {
       const redemptionId = randomUUID();
