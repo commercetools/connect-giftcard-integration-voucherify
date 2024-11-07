@@ -174,7 +174,8 @@
                 return Promise.resolve()
               },
               onGiftCardSubmit: async () => {
-                Promise.reject('some-error')
+                console.log('redeem!')
+                return Promise.resolve()
               },
               // If onGiftCardSubmit is defined, connector passes control of submission to it.
               onChange: (isDirty) => {
@@ -210,6 +211,7 @@
 
             // Render Submit / Balance Buttons
             const balanceButton = document.createElement("button");
+            const redeemButton = document.createElement("button");
             const checkBox = document.createElement("checkbox");
 
             balanceButton.textContent = "APPLY GIFT CARD";
@@ -225,9 +227,9 @@
                 event.preventDefault();
                 alert("You must agree to the terms and conditions.");
                 return;
-              }
+              } 
 
-              const balanceResponse = await component.balance();
+              const balanceResponse = await component.balance();              
 
               responseContainer.className =
                 "p-4 bg-white rounded shadow-sm border text-start";
@@ -240,7 +242,25 @@
               return;
             });
 
+            redeemButton.textContent = "REDEEM";
+            redeemButton.className =
+              "btn btn-md btn-primary btn-block col-md-6";
+            redeemButton.type = "submit";
+            redeemButton.addEventListener("click", async () => {
+              event.preventDefault();
+              const termsChecked =
+                document.getElementById("termsCheckbox").checked;
+              if (!termsChecked) {
+                event.preventDefault();
+                alert("You must agree to the terms and conditions.");
+                return;
+              } 
+              
+              const redeemResponse = await component.submit();            
+              console.log(redeemResponse)
+            })
             buttonContainer.appendChild(balanceButton);
+            buttonContainer.appendChild(redeemButton);
           });
       </script>
     </main>

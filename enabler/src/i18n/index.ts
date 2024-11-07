@@ -14,7 +14,6 @@ export default class I18n {
     if (!this.translations[normalizedLang]) {
       console.info(`Language '${lang}' not supported`);
     }
-
     return this.translations[normalizedLang]?.[key] || this.translations[defaultLanguage]?.[key] || key;
   }
 }

@@ -47,7 +47,7 @@ export class FormComponent extends DefaultComponent {
     return null;
   }
 
-  submit(_: { amount?: Amount }): void {
+  async submit(): Promise<void> {
     if (this.giftcardOptions?.onGiftCardSubmit) {
       this.giftcardOptions
         .onGiftCardSubmit()
@@ -56,9 +56,34 @@ export class FormComponent extends DefaultComponent {
           this.baseOptions.onError(err);
           throw err;
         });
-      return;
+      try {
+        const giftCardRedeemValue = getInput(fieldIds.amount).value.replace(/\s/g, '');
+        const giftCardRedeemCurrency = 'USD'; // TODO : Remove hardcoded currency
+        const giftCardRedeemAmount: Amount = {
+          centAmount: Number(giftCardRedeemValue) * 100,
+          currencyCode: giftCardRedeemCurrency,
+        };
+        const giftCardCode = getInput(fieldIds.code).value.replace(/\s/g, '');
+        const fetchBalanceURL = this.baseOptions.processorUrl.endsWith('/')
+          ? `${this.baseOptions.processorUrl}redemption`
+          : `${this.baseOptions.processorUrl}/redemption`;
+        const response = await fetch(fetchBalanceURL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Session-Id': this.baseOptions.sessionId,
+          },
+          body: JSON.stringify({
+            code: giftCardCode,
+            redeemAmount: giftCardRedeemAmount,
+          }),
+        });
+        return await response.json();
+      } catch (err) {
+        this.baseOptions.onError(err);
+      }
     }
-    // TODO: Implement call to /redeem https://commercetools.atlassian.net/browse/SCC-2621
+
     return null;
   }
 
@@ -84,6 +109,15 @@ export class FormComponent extends DefaultComponent {
               ${this.i18n.translate('giftCardPlaceholder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
             </label>
             <input class="${inputFieldStyles.inputField}" type="text" id="giftcard-code" name="giftCardCode" value="">
+            <span class="${inputFieldStyles.hidden} ${inputFieldStyles.errorField}">${this.i18n.translate('giftCardErrorInput', this.baseOptions.locale)}</span>
+          </div>
+        </form>
+        <form class="${inputFieldStyles.redeemForm}">
+          <div class="${inputFieldStyles.inputContainer}">
+          <label class="${inputFieldStyles.inputLabel}" for="giftcard-code">
+              ${this.i18n.translate('giftCardRedeemAmountPlaceHolder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
+            </label>
+            <input class="${inputFieldStyles.inputField}" type="text" id="redeem-amount" name="giftCardRedeemAmount" value="">
             <span class="${inputFieldStyles.hidden} ${inputFieldStyles.errorField}">${this.i18n.translate('giftCardErrorInput', this.baseOptions.locale)}</span>
           </div>
         </form>

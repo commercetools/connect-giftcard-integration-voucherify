@@ -36,5 +36,5 @@ export abstract class DefaultComponent implements GiftCardComponent {
 
   getState?(): {
     code?: string;
-  }
+  };
 }

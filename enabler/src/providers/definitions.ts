@@ -4,7 +4,7 @@ export interface GiftCardComponent {
   mount(selector: string): void;
   getState?(): {
     code?: string;
-  }
+  };
 }
 
 export type Amount = {
