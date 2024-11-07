@@ -77,6 +77,7 @@
                 <div id="responseContainer"></div>
                 <div class="my-2" id="checkboxContainer"></div>
                 <div class="row m-0" id="buttonContainer"></div>
+                <div class="row m-0" id="redeemContainer"></div>
               </div>
 
               <!-- STatus -->
@@ -173,10 +174,10 @@
                 console.log('ready!')
                 return Promise.resolve()
               },
-              onGiftCardSubmit: async () => {
-                console.log('redeem!')
-                return Promise.resolve()
-              },
+              // onGiftCardSubmit: async () => {
+              //   console.log('redeem!')
+              //   return Promise.resolve()
+              // },
               // If onGiftCardSubmit is defined, connector passes control of submission to it.
               onChange: (isDirty) => {
                 console.log(isDirty)
@@ -207,13 +208,13 @@
             div.appendChild(label);
 
             // Append the div to the checkbox container
-            checkboxContainer.appendChild(div);
+            checkboxContainer.appendChild(div)
 
             // Render Submit / Balance Buttons
             const balanceButton = document.createElement("button");
             const redeemButton = document.createElement("button");
             const checkBox = document.createElement("checkbox");
-
+            
             balanceButton.textContent = "APPLY GIFT CARD";
             balanceButton.className =
               "btn btn-md btn-primary btn-block col-md-6";
@@ -241,7 +242,10 @@
 
               return;
             });
+            buttonContainer.appendChild(balanceButton);
 
+            const redeemAmountInput = document.createElement("input")
+            redeemAmountInput.placeholder="Please input redeem amount"
             redeemButton.textContent = "REDEEM";
             redeemButton.className =
               "btn btn-md btn-primary btn-block col-md-6";
@@ -255,12 +259,17 @@
                 alert("You must agree to the terms and conditions.");
                 return;
               } 
-              
-              const redeemResponse = await component.submit();            
-              console.log(redeemResponse)
+              const redeemAmountValue = redeemAmountInput.value;
+              const giftCardRedeemAmount = {
+                centAmount: parseFloat(redeemAmountValue)*100,
+                currencyCode: 'USD'
+              }
+              const redeemResponse = await component.submit({
+                amount: giftCardRedeemAmount
+              });            
             })
-            buttonContainer.appendChild(balanceButton);
-            buttonContainer.appendChild(redeemButton);
+            redeemContainer.appendChild(redeemAmountInput)
+            redeemContainer.appendChild(redeemButton);
           });
       </script>
     </main>

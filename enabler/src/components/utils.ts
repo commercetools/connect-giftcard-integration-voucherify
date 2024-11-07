@@ -13,8 +13,6 @@ const isFieldValid = (field: string) => {
   switch (field) {
     case 'giftcard-code':
       return input.value.length > 0;
-    case 'redeem-amount':
-      return true; // TODO: Do amount validation here
     default:
       return false;
   }

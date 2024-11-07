@@ -47,7 +47,7 @@ export class FormComponent extends DefaultComponent {
     return null;
   }
 
-  async submit(): Promise<void> {
+  async submit(params: { amount?: Amount }): Promise<void> {
     if (this.giftcardOptions?.onGiftCardSubmit) {
       this.giftcardOptions
         .onGiftCardSubmit()
@@ -56,32 +56,31 @@ export class FormComponent extends DefaultComponent {
           this.baseOptions.onError(err);
           throw err;
         });
-      try {
-        const giftCardRedeemValue = getInput(fieldIds.amount).value.replace(/\s/g, '');
-        const giftCardRedeemCurrency = 'USD'; // TODO : Remove hardcoded currency
-        const giftCardRedeemAmount: Amount = {
-          centAmount: Number(giftCardRedeemValue) * 100,
-          currencyCode: giftCardRedeemCurrency,
-        };
-        const giftCardCode = getInput(fieldIds.code).value.replace(/\s/g, '');
-        const fetchBalanceURL = this.baseOptions.processorUrl.endsWith('/')
-          ? `${this.baseOptions.processorUrl}redemption`
-          : `${this.baseOptions.processorUrl}/redemption`;
-        const response = await fetch(fetchBalanceURL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Session-Id': this.baseOptions.sessionId,
-          },
-          body: JSON.stringify({
-            code: giftCardCode,
-            redeemAmount: giftCardRedeemAmount,
-          }),
-        });
-        return await response.json();
-      } catch (err) {
-        this.baseOptions.onError(err);
-      }
+    }
+    try {
+      const giftCardCode = getInput(fieldIds.code).value.replace(/\s/g, '');
+      const requestBody = {
+        redeemAmount: params.amount,
+        code: giftCardCode,
+      };
+      console.log('===requestBody===');
+      console.log(requestBody);
+      const fetchBalanceURL = this.baseOptions.processorUrl.endsWith('/')
+        ? `${this.baseOptions.processorUrl}redemption}`
+        : `${this.baseOptions.processorUrl}/redemption`;
+      const response = await fetch(fetchBalanceURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Session-Id': this.baseOptions.sessionId,
+        },
+        body: JSON.stringify(requestBody),
+      });
+      const result = await response.json();
+      console.log(result);
+      return result;
+    } catch (err) {
+      this.baseOptions.onError(err);
     }
 
     return null;
@@ -109,15 +108,6 @@ export class FormComponent extends DefaultComponent {
               ${this.i18n.translate('giftCardPlaceholder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
             </label>
             <input class="${inputFieldStyles.inputField}" type="text" id="giftcard-code" name="giftCardCode" value="">
-            <span class="${inputFieldStyles.hidden} ${inputFieldStyles.errorField}">${this.i18n.translate('giftCardErrorInput', this.baseOptions.locale)}</span>
-          </div>
-        </form>
-        <form class="${inputFieldStyles.redeemForm}">
-          <div class="${inputFieldStyles.inputContainer}">
-          <label class="${inputFieldStyles.inputLabel}" for="giftcard-code">
-              ${this.i18n.translate('giftCardRedeemAmountPlaceHolder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
-            </label>
-            <input class="${inputFieldStyles.inputField}" type="text" id="redeem-amount" name="giftCardRedeemAmount" value="">
             <span class="${inputFieldStyles.hidden} ${inputFieldStyles.errorField}">${this.i18n.translate('giftCardErrorInput', this.baseOptions.locale)}</span>
           </div>
         </form>
