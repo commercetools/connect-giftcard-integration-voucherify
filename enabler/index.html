@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -9,41 +9,30 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
-      crossorigin="anonymous"
-    />
+      crossorigin="anonymous" />
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous"></script>
     <script>
-      var __VITE_CTP_AUTH_URL__ =
-        !"%VITE_CTP_AUTH_URL%".startsWith("%") && "%VITE_CTP_AUTH_URL%";
-      var __VITE_CTP_API_URL__ =
-        !"%VITE_CTP_API_URL%".startsWith("%") && "%VITE_CTP_API_URL%";
-      var __VITE_CTP_SESSION_URL__ =
-        !"%VITE_CTP_SESSION_URL%".startsWith("%") && "%VITE_CTP_SESSION_URL%";
-      var __VITE_CTP_CLIENT_ID__ =
-        !"%VITE_CTP_CLIENT_ID%".startsWith("%") && "%VITE_CTP_CLIENT_ID%";
-      var __VITE_CTP_CLIENT_SECRET__ =
-        !"%VITE_CTP_CLIENT_SECRET%".startsWith("%") &&
-        "%VITE_CTP_CLIENT_SECRET%";
-      var __VITE_CTP_PROJECT_KEY__ =
-        !"%VITE_CTP_PROJECT_KEY%".startsWith("%") && "%VITE_CTP_PROJECT_KEY%";
-      var __VITE_PROCESSOR_URL__ =
-        !"%VITE_PROCESSOR_URL%".startsWith("%") && "%VITE_PROCESSOR_URL%";
+      var __VITE_CTP_AUTH_URL__ = !'%VITE_CTP_AUTH_URL%'.startsWith('%') && '%VITE_CTP_AUTH_URL%';
+      var __VITE_CTP_API_URL__ = !'%VITE_CTP_API_URL%'.startsWith('%') && '%VITE_CTP_API_URL%';
+      var __VITE_CTP_SESSION_URL__ = !'%VITE_CTP_SESSION_URL%'.startsWith('%') && '%VITE_CTP_SESSION_URL%';
+      var __VITE_CTP_CLIENT_ID__ = !'%VITE_CTP_CLIENT_ID%'.startsWith('%') && '%VITE_CTP_CLIENT_ID%';
+      var __VITE_CTP_CLIENT_SECRET__ = !'%VITE_CTP_CLIENT_SECRET%'.startsWith('%') && '%VITE_CTP_CLIENT_SECRET%';
+      var __VITE_CTP_PROJECT_KEY__ = !'%VITE_CTP_PROJECT_KEY%'.startsWith('%') && '%VITE_CTP_PROJECT_KEY%';
+      var __VITE_PROCESSOR_URL__ = !'%VITE_PROCESSOR_URL%'.startsWith('%') && '%VITE_PROCESSOR_URL%';
     </script>
     <script src="./devtools/session.js"></script>
+    <script src="./devtools/elements.js"></script>
   </head>
   <body>
     <main role="main">
@@ -62,11 +51,7 @@
                   <input type="text" class="form-control" id="cartId" />
                 </div>
                 <!-- Submit -->
-                <button
-                  id="createCheckout"
-                  class="btn btn-lg btn-primary btn-block"
-                  type="submit"
-                >
+                <button id="createCheckout" class="btn btn-lg btn-primary btn-block" type="submit">
                   Create checkout
                 </button>
 
@@ -77,23 +62,12 @@
                 <div id="responseContainer"></div>
                 <div class="my-2" id="checkboxContainer"></div>
                 <div class="row m-0" id="buttonContainer"></div>
-                <div class="row m-0" id="redeemContainer"><hr><br></div>
               </div>
 
               <!-- STatus -->
-              <div
-                class="container col-md-6 cursor-not-allowed"
-                style="cursor: not-allowed"
-              >
-                <h5 class="text-center mb-4 font-weight-normal">
-                  Connector Status
-                </h5>
-                <div
-                  id="statusDisplay"
-                  class="p-4 bg-white rounded shadow-sm border text-start"
-                >
-                  Loading data...
-                </div>
+              <div class="container col-md-6 cursor-not-allowed" style="cursor: not-allowed">
+                <h5 class="text-center mb-4 font-weight-normal">Connector Status</h5>
+                <div id="statusDisplay" class="p-4 bg-white rounded shadow-sm border text-start">Loading data...</div>
               </div>
             </div>
           </div>
@@ -101,178 +75,92 @@
       </section>
 
       <script type="module">
-        import { Enabler } from "/src/main.ts";
+        import { Enabler } from '/src/main.ts';
 
-        document.addEventListener("DOMContentLoaded", async () => {
-          const statusDisplay = document.getElementById("statusDisplay");
-          const response = await fetch("http://localhost:9000/jwt/token", {
-            method: "POST",
+        document.addEventListener('DOMContentLoaded', async () => {
+          // Fetch connector status
+
+          const statusDisplay = document.getElementById('statusDisplay');
+          const response = await fetch('http://localhost:9000/jwt/token', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              iss: "https://issuer.com",
-              sub: "test-sub",
-              "https://issuer.com/claims/project_key": `${__VITE_CTP_PROJECT_KEY__}`,
+              iss: 'https://issuer.com',
+              sub: 'test-sub',
+              'https://issuer.com/claims/project_key': `${__VITE_CTP_PROJECT_KEY__}`,
             }),
           });
 
           const accessToken = await response.json();
 
-          const res = await fetch(
-            `${__VITE_PROCESSOR_URL__}/operations/status`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${accessToken.token}`,
-              },
-            }
-          );
+          const res = await fetch(`${__VITE_PROCESSOR_URL__}/operations/status`, {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${accessToken.token}`,
+            },
+          });
           const connectorStatus = await res.json();
           connectorStatus.checks.forEach((check) => {
             if (check.details.error) {
-              return check
+              return check;
             }
             delete check.details;
           });
 
-          statusDisplay.innerHTML = `<pre class="mb-0">${JSON.stringify(
-            connectorStatus,
-            null,
-            2
-          )}</pre>`;
+          statusDisplay.innerHTML = `<pre class="mb-0">${JSON.stringify(connectorStatus, null, 2)}</pre>`;
         });
 
-        document
-          .getElementById("createCheckout")
-          .addEventListener("click", async (event) => {
-            event.preventDefault();
-            const cartId = document.getElementById("cartId").value;
-            const sessionId = await getSessionId(cartId);
+        // Start checkout process
 
-            const buttonContainer = document.getElementById("buttonContainer");
-            const checkboxContainer =
-              document.getElementById("checkboxContainer");
-            const responseContainer =
-              document.getElementById("responseContainer");
+        document.getElementById('createCheckout').addEventListener('click', async (event) => {
+          event.preventDefault();
+          const cartId = document.getElementById('cartId').value;
+          const sessionId = await getSessionId(cartId);
 
-            const enabler = new Enabler({
-              processorUrl: __VITE_PROCESSOR_URL__,
-              sessionId: sessionId,
-              locale: "en",
-              onComplete: ({ isSuccess, paymentReference }) => {
-                console.log("onComplete", { isSuccess, paymentReference });
-              },
-              onError: (err) => {
-                console.error("onError", err);
-              },
-            });
+          const buttonContainer = document.getElementById('buttonContainer');
+          const checkboxContainer = document.getElementById('checkboxContainer');
+          const responseContainer = document.getElementById('responseContainer');
 
-            const builder = await enabler.createGiftCardBuilder();
-            const component = await builder.build({
-              onGiftCardReady: async () => {
-                console.log('ready!')
-                return Promise.resolve()
-              },
-              onValueChange: (isDirty) => {
-                console.log(isDirty)
-              }
-            });
-
-            // Mount container component
-            component.mount("#mountContainer");
-
-            // Render CHeckBox
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = "termsCheckbox";
-            checkbox.className = "form-check-input";
-
-            // Create the label for the checkbox
-            const label = document.createElement("label");
-            label.htmlFor = "termsCheckbox";
-            label.textContent = "I agree to the terms and conditions";
-            label.className = "form-check-label";
-
-            // Create a div to wrap the checkbox and label
-            const div = document.createElement("div");
-            div.className = "form-check";
-
-            // Append the checkbox and label to the wrapping div
-            div.appendChild(checkbox);
-            div.appendChild(label);
-
-            // Append the div to the checkbox container
-            checkboxContainer.appendChild(div)
-
-            // Render Submit / Balance Buttons
-            const balanceButton = document.createElement("button");
-            const redeemButton = document.createElement("button");
-            const checkBox = document.createElement("checkbox");
-            
-            balanceButton.textContent = "APPLY GIFT CARD";
-            balanceButton.className =
-              "btn btn-md btn-primary btn-block col-md-6";
-            balanceButton.type = "submit";
-
-            balanceButton.addEventListener("click", async () => {
-              event.preventDefault();
-              const termsChecked =
-                document.getElementById("termsCheckbox").checked;
-              if (!termsChecked) {
-                event.preventDefault();
-                alert("You must agree to the terms and conditions.");
-                return;
-              } 
-
-              const balanceResponse = await component.balance();              
-
-              responseContainer.className =
-                "p-4 bg-white rounded shadow-sm border text-start";
-              responseContainer.innerHTML = `<pre class="mb-0">${JSON.stringify(
-                balanceResponse,
-                null,
-                2
-              )}</pre>`;
-
-              return;
-            });
-            buttonContainer.appendChild(balanceButton);
-
-            const redeemAmountInput = document.createElement("input")
-            redeemAmountInput.setAttribute('size','40')
-            redeemAmountInput.placeholder="Input testing redeem amount in cent *"
-            redeemButton.textContent = "REDEEM";
-            redeemButton.className =
-              "btn btn-md btn-primary btn-block col-md-6";
-            redeemButton.type = "submit";
-            redeemButton.addEventListener("click", async () => {
-              event.preventDefault();
-              const termsChecked =
-                document.getElementById("termsCheckbox").checked;
-              if (!termsChecked) {
-                event.preventDefault();
-                alert("You must agree to the terms and conditions.");
-                return;
-              } 
-              const redeemAmountValue = redeemAmountInput.value;
-              // validate input redeem amount
-              if (isNaN(parseFloat(redeemAmountValue)) || !isFinite(redeemAmountValue)) {
-                event.preventDefault();
-                alert("The redeem amount is not in a valid format");
-                return;
-              }
-              const giftCardRedeemAmount = {
-                centAmount: parseFloat(redeemAmountValue),
-                currencyCode: 'USD'
-              }
-              const redeemResponse = await component.submit({
-                amount: giftCardRedeemAmount
-              });            
-            })
-            redeemContainer.appendChild(redeemAmountInput)
-            redeemContainer.appendChild(redeemButton);
+          const enabler = new Enabler({
+            processorUrl: __VITE_PROCESSOR_URL__,
+            sessionId: sessionId,
+            locale: 'en',
+            onComplete: ({ isSuccess, paymentReference }) => {
+              console.log('onComplete', { isSuccess, paymentReference });
+            },
+            onError: (err) => {
+              console.error('onError', err);
+            },
           });
+
+          const builder = await enabler.createGiftCardBuilder();
+          const component = await builder.build({
+            onGiftCardReady: async () => {
+              console.log('ready!');
+              return Promise.resolve();
+            },
+            onValueChange: (isDirty) => {
+              console.log(isDirty);
+            },
+          });
+
+          // Mount container component
+          component.mount('#mountContainer');
+
+          // Render CHeckBox
+          const checkBox = createCheckBox();
+
+          // Append the div to the checkbox container
+          checkboxContainer.appendChild(checkBox);
+
+          // Render Submit / Balance Buttons
+          const balanceButton = createBalanceButton(component);
+
+          // Append balance button to button container
+          buttonContainer.appendChild(balanceButton);
+        });
       </script>
     </main>
   </body>

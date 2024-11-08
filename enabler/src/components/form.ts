@@ -71,8 +71,8 @@ export class FormComponent extends DefaultComponent {
         code: giftCardCode,
       };
       const requestRedeemURL = this.baseOptions.processorUrl.endsWith('/')
-        ? `${this.baseOptions.processorUrl}redemption}`
-        : `${this.baseOptions.processorUrl}/redemption`;
+        ? `${this.baseOptions.processorUrl}redeem}`
+        : `${this.baseOptions.processorUrl}/redeem`;
       const response = await fetch(requestRedeemURL, {
         method: 'POST',
         headers: {
@@ -87,7 +87,7 @@ export class FormComponent extends DefaultComponent {
       }
       const paymentResult: PaymentResult = {
         isSuccess: redeemResult.result,
-        paymentReference: redeemResult.paymentId,
+        paymentReference: redeemResult.paymentReference,
       };
 
       this.baseOptions.onComplete(paymentResult);
