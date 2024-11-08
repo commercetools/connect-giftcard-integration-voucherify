@@ -50,7 +50,6 @@ const createBalanceButton = (component) => {
     responseContainer.innerHTML = `<pre class="mb-0">${JSON.stringify(balanceResponse, null, 2)}</pre>`;
 
     // Create the Pay or redeem button, when pay button is clicked, render a prompt to accept amount
-    // Move this into another function, in the dev tools file actually all the scripts should be moved there
     if (balanceResponse.status.state === 'Valid') {
       const redeemButton = createRedeemButton(component);
 
