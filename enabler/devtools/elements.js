@@ -13,7 +13,10 @@ const createRedeemButton = (component) => {
       return;
     }
 
-    const amount = prompt('Enter amount to be redeemed as cent, please bear in mind currency is hardcoded as USD', 1000);
+    const amount = prompt(
+      'Enter amount to be redeemed as cent, please bear in mind currency is hardcoded as USD',
+      1000,
+    );
 
     const giftCardRedeemAmount = {
       centAmount: amount,
@@ -26,7 +29,7 @@ const createRedeemButton = (component) => {
   });
 
   return redeemButton;
-}
+};
 
 const createBalanceButton = (component) => {
   const balanceButton = document.createElement('button');
@@ -60,7 +63,7 @@ const createBalanceButton = (component) => {
   });
 
   return balanceButton;
-}
+};
 
 const createCheckBox = () => {
   const checkbox = document.createElement('input');
@@ -83,4 +86,4 @@ const createCheckBox = () => {
   div.appendChild(label);
 
   return div;
-}
+};
