@@ -50,20 +50,20 @@ const handleFieldValidation = (field: string) => {
   });
 };
 
-const handleChangeEvent = (field: string, onChange?: (isDirty: boolean) => void) => {
+const handleChangeEvent = (field: string, onValueChange?: (hasValue: boolean) => Promise<void>) => {
   const input = getInput(field);
   if (input) {
-    let isDirty = false;
+    let hasValue = false;
 
     input.addEventListener('input', () => {
-      if (!isDirty && input.value !== '') {
-        isDirty = true;
+      if (!hasValue && input.value !== '') {
+        hasValue = true;
 
-        onChange?.(isDirty);
-      } else if (isDirty && input.value === '') {
-        isDirty = false;
+        onValueChange?.(hasValue);
+      } else if (hasValue && input.value === '') {
+        hasValue = false;
 
-        onChange?.(isDirty);
+        onValueChange?.(hasValue);
       }
     });
   }
@@ -71,5 +71,5 @@ const handleChangeEvent = (field: string, onChange?: (isDirty: boolean) => void)
 
 export const addFormFieldsEventListeners = (giftcardOptions: GiftCardOptions) => {
   handleFieldValidation(fieldIds.code);
-  handleChangeEvent(fieldIds.code, giftcardOptions?.onChange);
+  handleChangeEvent(fieldIds.code, giftcardOptions?.onValueChange);
 };
