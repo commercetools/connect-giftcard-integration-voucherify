@@ -71,10 +71,10 @@ export class FormComponent extends DefaultComponent {
         redeemAmount: params.amount,
         code: giftCardCode,
       };
-      const fetchBalanceURL = this.baseOptions.processorUrl.endsWith('/')
+      const requestRedeemURL = this.baseOptions.processorUrl.endsWith('/')
         ? `${this.baseOptions.processorUrl}redemption}`
         : `${this.baseOptions.processorUrl}/redemption`;
-      const response = await fetch(fetchBalanceURL, {
+      const response = await fetch(requestRedeemURL, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
