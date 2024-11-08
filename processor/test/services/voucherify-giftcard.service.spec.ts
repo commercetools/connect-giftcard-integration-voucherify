@@ -107,8 +107,24 @@ describe('voucherify-giftcard.service', () => {
     setupMockConfig({ voucherifyCurrency: 'USD' });
     mockServer.use(mockRequest('https://api.voucherify.io', `/v1/validations`, 200, validateVouchersNotOk));
 
+    // Act
     const result = giftcardService.balance('some-code');
+
+    // Assert
+    await expect(result).rejects.toThrow(VoucherifyCustomError);
     await expect(result).rejects.toThrowError('voucher with given code does not exist');
+  });
+
+  test('balance Not-Ok: currency mismatch', async () => {
+    setupMockConfig({ voucherifyCurrency: 'EUR' });
+    mockServer.use(mockRequest('https://api.voucherify.io', `/v1/validations`, 200, validateVouchersOk));
+
+    // Act
+    const result = giftcardService.balance('some-code');
+
+    // Assert
+    await expect(result).rejects.toThrow(VoucherifyCustomError);
+    await expect(result).rejects.toThrowError('cart and gift card currency do not match');
   });
 
   test('redeem OK', async () => {
@@ -119,6 +135,7 @@ describe('voucherify-giftcard.service', () => {
     jest.spyOn(DefaultCartService.prototype, 'addPayment').mockResolvedValue(getCartOK());
     jest.spyOn(DefaultPaymentService.prototype, 'updatePayment').mockResolvedValue(updatePaymentResultOk);
 
+    // Act
     const result = await giftcardService.redeem({
       data: {
         code: '34567',
@@ -128,32 +145,33 @@ describe('voucherify-giftcard.service', () => {
         },
       },
     });
+
+    // Assert
     expect(result.result).toStrictEqual('Success');
     expect(result.redemptionId).toStrictEqual('REDEMPTION_ID');
     expect(result.paymentReference).toStrictEqual('123456');
   });
 
-  test('redeem not OK', async () => {
+  test('redeem Not-Ok: currency mismatch', async () => {
     setupMockConfig({ voucherifyCurrency: 'EUR' });
     mockServer.use(mockRequest('https://api.voucherify.io', `/v1/redemptions`, 200, redeemVouchersOk));
 
     jest.spyOn(DefaultCartService.prototype, 'getCart').mockResolvedValue(getCartOK());
 
-    try {
-      await giftcardService.redeem({
-        data: {
-          code: '34567',
-          redeemAmount: {
-            centAmount: 1,
-            currencyCode: 'USD',
-          },
+    // Act
+    const result = giftcardService.redeem({
+      data: {
+        code: '34567',
+        redeemAmount: {
+          centAmount: 1,
+          currencyCode: 'USD',
         },
-      });
-    } catch (error) {
-      expect(error).toBeInstanceOf(VoucherifyCustomError);
-      const voucherifyCustomError = error as VoucherifyCustomError;
-      expect(voucherifyCustomError.code).toEqual('CurrencyNotMatch');
-    }
+      },
+    });
+
+    // Assert
+    await expect(result).rejects.toThrow(VoucherifyCustomError);
+    await expect(result).rejects.toThrowError('cart and gift card currency do not match');
   });
 
   describe('modifyPayment', () => {
