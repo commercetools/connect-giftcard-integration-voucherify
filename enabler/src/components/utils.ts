@@ -5,7 +5,6 @@ export const getInput = (field: string) => document.querySelector(`#${field}`) a
 
 export const fieldIds = {
   code: 'giftcard-code',
-  amount: 'redeem-amount',
 };
 
 const isFieldValid = (field: string) => {
