@@ -129,9 +129,13 @@
             locale: 'en',
             onComplete: ({ isSuccess, paymentReference }) => {
               console.log('onComplete', { isSuccess, paymentReference });
+              responseContainer.className = 'p-4 bg-white rounded shadow-sm border text-start';
+              responseContainer.innerHTML = `<pre class="mb-0">${JSON.stringify({ isSuccess, paymentReference }, null, 2)}</pre>`;
             },
             onError: (err) => {
               console.error('onError', err);
+              responseContainer.className = 'p-4 bg-white rounded shadow-sm border text-start';
+              responseContainer.innerHTML = `<pre class="mb-0">${JSON.stringify(err, null, 2)}</pre>`;
             },
           });
 

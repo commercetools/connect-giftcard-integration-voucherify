@@ -44,8 +44,6 @@ const createBalanceButton = (component) => {
 
   balanceButton.addEventListener('click', async (event) => {
     event.preventDefault();
-    const buttonContainer = document.getElementById('buttonContainer');
-    
     const termsChecked = document.getElementById('termsCheckbox').checked;
     if (!termsChecked) {
       event.preventDefault();
