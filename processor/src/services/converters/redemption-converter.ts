@@ -21,7 +21,7 @@ export class RedemptionConverter {
     const redemptionResultObj = opts?.redemptionResult.redemptions[0];
     return {
       result: this.convertVoucherifyResultCode(redemptionResultObj?.result || ''),
-      paymentId: opts?.createPaymentResult.id || '',
+      paymentReference: opts?.createPaymentResult.id || '',
       redemptionId: redemptionResultObj?.id || '',
     };
   }

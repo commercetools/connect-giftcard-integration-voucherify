@@ -23,7 +23,7 @@ export const RedeemRequestSchema = Type.Object({
 
 export const RedeemResponseSchema = Type.Object({
   result: Type.String(),
-  paymentId: Type.String(),
+  paymentReference: Type.String(),
   redemptionId: Type.String(),
 });
 

@@ -35,6 +35,7 @@ export const voucherifyGiftCardServiceRoutes = async (
           properties: {
             code: Type.String(),
           },
+          required: ['code'],
         },
         response: {
           200: BalanceResponseSchema,
@@ -48,7 +49,7 @@ export const voucherifyGiftCardServiceRoutes = async (
   );
 
   fastify.post<{ Body: RedeemRequestDTO; Reply: RedeemResponseDTO }>(
-    '/redemption',
+    '/redeem',
     {
       preHandler: [opts.sessionHeaderAuthHook.authenticate()],
       schema: {

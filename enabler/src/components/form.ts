@@ -51,7 +51,6 @@ export class FormComponent extends DefaultComponent {
     } catch (err) {
       this.baseOptions.onError(err);
     }
-    return null;
   }
 
   async submit(params: { amount?: Amount }): Promise<void> {

@@ -1,4 +1,4 @@
-# Payment Integration Processor
+# Gift card Integration Processor
 
 This module provides an application based on [commercetools Connect](https://docs.commercetools.com/connect), which is triggered by HTTP requests from Checkout UI for payment operations.
 

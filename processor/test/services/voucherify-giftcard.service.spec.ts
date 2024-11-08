@@ -130,7 +130,7 @@ describe('voucherify-giftcard.service', () => {
     });
     expect(result.result).toStrictEqual('Success');
     expect(result.redemptionId).toStrictEqual('REDEMPTION_ID');
-    expect(result.paymentId).toStrictEqual('123456');
+    expect(result.paymentReference).toStrictEqual('123456');
   });
 
   test('redeem not OK', async () => {
