@@ -32,7 +32,20 @@ deployAs:
           description: JWT Issuer for jwt validation (example - https://mc-api.europe-west1.gcp.commercetools.com)
           required: true
           default: https://mc-api.europe-west1.gcp.commercetools.com
+        - key: VOUCHERIFY_APPLICATION_ID
+          description: voucherify application ID
+          required: true
+        - key: VOUCHERIFY_API_URL
+          description: voucherify API URL
+          required: true
+          default: https://api.voucherify.io
+        - key: VOUCHERIFY_CURRENCY
+          description: voucherify project currency
+          required: true
       securedConfiguration:
         - key: CTP_CLIENT_SECRET
           description: commercetools client secret
+          required: true
+        - key: VOUCHERIFY_SECRET_KEY
+          description: voucherify secret key
           required: true
