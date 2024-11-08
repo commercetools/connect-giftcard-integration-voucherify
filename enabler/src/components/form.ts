@@ -83,7 +83,9 @@ export class FormComponent extends DefaultComponent {
         body: JSON.stringify(requestBody),
       });
       const redeemResult = await response.json();
-      console.log(redeemResult);
+      if (response.status !== 200) {
+        throw new Error(redeemResult.message);
+      }
       const paymentResult: PaymentResult = {
         isSuccess: redeemResult.result,
         paymentReference: redeemResult.paymentId,
