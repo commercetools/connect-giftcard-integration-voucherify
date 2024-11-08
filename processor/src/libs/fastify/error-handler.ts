@@ -12,7 +12,7 @@ import {
   MultiErrorx,
 } from '@commercetools/connect-payments-sdk';
 import { TAuthErrorResponse, TErrorObject, TErrorResponse, TVoucherifyCustomErrorResponse } from './dtos/error.dto';
-import { VoucherifyApiError, VoucherifyCustomError } from '../../errors/voucherify-api.error';
+import { VoucherifyCustomError } from '../../errors/voucherify-api.error';
 
 function isFastifyValidationError(error: Error): error is FastifyError {
   return (error as unknown as FastifyError).validation != undefined;
@@ -23,8 +23,8 @@ export const errorHandler = (error: Error, req: FastifyRequest, reply: FastifyRe
     return handleErrors(transformValidationErrors(error.validation, req), reply);
   } else if (error instanceof ErrorAuthErrorResponse) {
     return handleAuthError(error, reply);
-  } else if (error instanceof VoucherifyCustomError || error instanceof VoucherifyApiError) {
-    return handleVoucherifyError(error, reply);
+  } else if (error instanceof VoucherifyCustomError) {
+    return handleVoucherifyCustomError(error, reply);
   } else if (error instanceof Errorx) {
     return handleErrors([error], reply);
   } else if (error instanceof MultiErrorx) {
@@ -34,12 +34,14 @@ export const errorHandler = (error: Error, req: FastifyRequest, reply: FastifyRe
   return handleErrors([new ErrorGeneral('Internal server error.', { cause: error, skipLog: false })], reply);
 };
 
-const handleVoucherifyError = (error: VoucherifyCustomError, reply: FastifyReply) => {
+const handleVoucherifyCustomError = (error: VoucherifyCustomError, reply: FastifyReply) => {
   const transformedErrors: TErrorObject[] = transformErrorxToHTTPModel([error]);
+
+  const supportedErrorStates = ['NotFound', 'Expired', 'CurrencyNotMatch'];
 
   const response: TVoucherifyCustomErrorResponse = {
     status: {
-      state: error.code,
+      state: supportedErrorStates.includes(error.code) ? error.code : 'GenericError',
       errors: transformedErrors,
     },
   };

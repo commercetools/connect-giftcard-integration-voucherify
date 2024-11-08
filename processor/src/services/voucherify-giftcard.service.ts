@@ -27,6 +27,7 @@ import { getCartIdFromContext, getPaymentInterfaceFromContext } from '../libs/fa
 import { PaymentModificationStatus } from '../dtos/operations/payment-intents.dto';
 
 import { RedemptionsRedeemStackableParams, RedemptionsRedeemStackableResponse } from '../clients/types/redemptions';
+import { VoucherifyError } from '../clients/voucherify.error';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const packageJSON = require('../../package.json');
@@ -139,8 +140,24 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
     } catch (err) {
       log.error('Error fetching gift card', { error: err });
 
-      if (err instanceof VoucherifyCustomError || err instanceof VoucherifyApiError) {
+      if (err instanceof VoucherifyCustomError) {
         throw err;
+      }
+
+      if (err instanceof VoucherifyError) {
+        throw new VoucherifyCustomError(
+          {
+            code: err.code,
+            message: err.message,
+            key: err.key,
+          },
+          {
+            privateFields: {
+              details: err.details,
+            },
+            cause: err,
+          },
+        );
       }
 
       throw new ErrorGeneral('Internal Server Error', {
@@ -218,7 +235,21 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
         throw err;
       }
 
-      // TODO: do we need to catch errors from voucherify here? And do we need to send a Generic error in case of a voucherify error instead of Server Error, achieve this by evaluating the error type returned, should be VoucherfyError (confirm this)
+      if (err instanceof VoucherifyError) {
+        throw new VoucherifyApiError(
+          {
+            code: err.code,
+            message: err.message,
+            key: err.key,
+          },
+          {
+            privateFields: {
+              details: err.details,
+            },
+            cause: err,
+          },
+        );
+      }
 
       throw new ErrorGeneral('Internal Server Error', {
         privateMessage: 'internal error making a call to voucherify',
@@ -290,15 +321,36 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
       id: request.payment.id,
     });
     const redemptionId = ctPayment.interfaceId;
-    const rollbackResult = await VoucherifyAPI().redemptions.rollback(redemptionId as string);
 
-    // TODO: catch error returned by voucherify, check if the error type is VoucherifyError and if it is, return the error in our structure. Important because if we try to rollback twice,
-    // currently we get a 500 error code, we should get a 400 error code, and return the appropriate Generic error object with the voucherify error as child.
+    try {
+      const rollbackResult = await VoucherifyAPI().redemptions.rollback(redemptionId as string);
 
-    return {
-      outcome:
-        rollbackResult.result === 'SUCCESS' ? PaymentModificationStatus.APPROVED : PaymentModificationStatus.REJECTED,
-      pspReference: rollbackResult.id,
-    };
+      return {
+        outcome:
+          rollbackResult.result === 'SUCCESS' ? PaymentModificationStatus.APPROVED : PaymentModificationStatus.REJECTED,
+        pspReference: rollbackResult.id,
+      };
+    } catch (err) {
+      if (err instanceof VoucherifyError) {
+        throw new VoucherifyApiError(
+          {
+            code: err.code,
+            message: err.message,
+            key: err.key,
+          },
+          {
+            privateFields: {
+              details: err.details,
+            },
+            cause: err,
+          },
+        );
+      }
+
+      throw new ErrorGeneral('Internal Server Error', {
+        privateMessage: 'internal error rolling back a redemption on voucherify',
+        cause: err,
+      });
+    }
   }
 }

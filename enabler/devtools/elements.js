@@ -15,13 +15,6 @@ const createRedeemButton = (component) => {
 
     const amount = prompt('Enter amount to be redeemed as cent, please bear in mind currency is hardcoded as USD', 1000);
 
-    // TODO: try to set amount as string and see what happens;
-    // // validate input redeem amount
-    // if (isNaN(parseFloat(redeemAmountValue)) || !isFinite(redeemAmountValue)) {
-    //   event.preventDefault();
-    //   alert('The redeem amount is not in a valid format');
-    //   return;
-    // }
     const giftCardRedeemAmount = {
       centAmount: amount,
       currencyCode: 'USD',
