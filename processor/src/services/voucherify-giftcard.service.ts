@@ -145,7 +145,7 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
       }
 
       if (err instanceof VoucherifyError) {
-        throw new VoucherifyCustomError(
+        throw new VoucherifyApiError(
           {
             code: err.code,
             message: err.message,
