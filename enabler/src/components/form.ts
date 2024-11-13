@@ -129,7 +129,6 @@ export class FormComponent extends DefaultComponent {
               ${this.i18n.translate('giftCardPlaceholder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
             </label>
             <input class="${inputFieldStyles.inputField}" type="text" id="giftcard-code" name="giftCardCode" value="">
-            <span class="${inputFieldStyles.hidden} ${inputFieldStyles.errorField}">${this.i18n.translate('giftCardErrorInput', this.baseOptions.locale)}</span>
           </div>
         </form>
       </div>
