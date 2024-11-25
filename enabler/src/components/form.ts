@@ -48,9 +48,9 @@ export class FormComponent extends DefaultComponent {
       });
 
       const jsonResponse = await response.json();
-
-      if (!response.ok) {
+      if (!jsonResponse?.status?.state) {
         this.baseOptions.onError(jsonResponse);
+        return
       }
 
       return jsonResponse;
