@@ -1,4 +1,5 @@
 import { GiftCardOptions } from '../providers/definitions';
+import inputFieldStyles from '../style/inputField.module.scss';
 
 export const getInput = (field: string) => document.querySelector(`#${field}`) as HTMLInputElement;
 
@@ -23,6 +24,12 @@ const handleChangeEvent = (field: string, onValueChange?: (hasValue: boolean) =>
       }
     });
   }
+
+  input.addEventListener('focusout', () => {
+    input.value.length > 0
+      ? input.parentElement.classList.add(inputFieldStyles.containValue)
+      : input.parentElement.classList.remove(inputFieldStyles.containValue);
+  });
 };
 
 export const addFormFieldsEventListeners = (giftcardOptions: GiftCardOptions) => {
