@@ -63,7 +63,6 @@ describe('voucherify-giftcard.service', () => {
   });
 
   afterEach(() => {
-    // jest.restoreAllMocks();
     mockServer.resetHandlers();
   });
 
@@ -95,7 +94,6 @@ describe('voucherify-giftcard.service', () => {
   test('balance OK', async () => {
     setupMockConfig({ voucherifyCurrency: 'USD' });
     mockServer.use(mockRequest('https://api.voucherify.io', `/v1/validations`, 200, validateVouchersOk));
-    // jest.spyOn(DefaultCartService.prototype, 'getCart').mockResolvedValue(getCartOK());
 
     const result = await giftcardService.balance('some-code');
 

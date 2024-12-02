@@ -124,10 +124,6 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
         },
       });
 
-      if (!validationResult.valid) {
-        return this.balanceConverter.invalid(validationResult.redeemables?.[0].result);
-      }
-
       if (getConfig().voucherifyCurrency !== amountPlanned.currencyCode) {
         throw new VoucherifyCustomError({
           message: 'cart and gift card currency do not match',
@@ -136,7 +132,7 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
         });
       }
 
-      return this.balanceConverter.valid(validationResult.redeemables?.[0].result);
+      return this.balanceConverter.convert(validationResult);
     } catch (err) {
       log.error('Error fetching gift card', { error: err });
 
