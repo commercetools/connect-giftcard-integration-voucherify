@@ -325,6 +325,10 @@ export class VoucherifyGiftCardService extends AbstractGiftCardService {
         outcome:
           rollbackResult.result === 'SUCCESS' ? PaymentModificationStatus.APPROVED : PaymentModificationStatus.REJECTED,
         pspReference: rollbackResult.id,
+        amountRefunded: {
+          currencyCode: ctPayment.amountPlanned.currencyCode,
+          centAmount: Math.abs(rollbackResult.amount || 0),
+        },
       };
     } catch (err) {
       if (err instanceof VoucherifyError) {

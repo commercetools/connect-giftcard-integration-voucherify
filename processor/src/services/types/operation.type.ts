@@ -23,6 +23,7 @@ export type RefundPaymentRequest = {
 export type PaymentProviderModificationResponse = {
   outcome: PaymentModificationStatus;
   pspReference: string;
+  amountRefunded?: AmountSchemaDTO;
 };
 
 export type StatusResponse = StatusResponseSchemaDTO;
