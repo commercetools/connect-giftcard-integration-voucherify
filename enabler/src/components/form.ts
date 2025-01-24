@@ -134,10 +134,4 @@ export class FormComponent extends DefaultComponent {
       </div>
     `;
   }
-
-  getState(): { code?: string } {
-    return {
-      code: getInput(fieldIds.code).value.replace(/\s/g, ''),
-    };
-  }
 }

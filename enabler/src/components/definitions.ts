@@ -33,8 +33,4 @@ export abstract class DefaultComponent implements GiftCardComponent {
   abstract submit(opts: { amount?: Amount }): void;
 
   abstract mount(selector: string): void;
-
-  getState?(): {
-    code?: string;
-  };
 }

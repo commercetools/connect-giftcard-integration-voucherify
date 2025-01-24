@@ -2,9 +2,6 @@ export interface GiftCardComponent {
   submit(opts: { amount?: Amount }): void;
   balance(): Promise<BalanceType>;
   mount(selector: string): void;
-  getState?(): {
-    code?: string;
-  };
 }
 
 export type Amount = {
