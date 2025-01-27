@@ -18,8 +18,8 @@
     "connector:pre-undeploy": "node src/connectors/pre-undeploy.ts"
   },
   "dependencies": {
-    "@commercetools-backend/loggers": "22.38.2",
-    "@commercetools/connect-payments-sdk": "0.16.0",
+    "@commercetools-backend/loggers": "22.39.1",
+    "@commercetools/connect-payments-sdk": "0.17.2",
     "@fastify/autoload": "6.0.3",
     "@fastify/cors": "10.0.2",
     "@fastify/formbody": "8.0.2",
@@ -36,10 +36,10 @@
   "devDependencies": {
     "@jest/globals": "29.7.0",
     "@types/jest": "29.5.14",
-    "@types/node": "22.10.7",
+    "@types/node": "22.10.10",
     "@typescript-eslint/eslint-plugin": "8.21.0",
     "@typescript-eslint/parser": "8.21.0",
-    "eslint": "9.18.0",
+    "eslint": "9.19.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-jest": "28.11.0",
     "eslint-plugin-prettier": "5.2.3",
