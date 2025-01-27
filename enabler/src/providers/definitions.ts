@@ -18,7 +18,6 @@ export interface GiftCardBuilder {
 
 export type GiftCardOptions = {
   onGiftCardReady?: () => Promise<void>;
-  onGiftCardSubmit?: () => Promise<void>;
   onValueChange?: (hasValue: boolean) => Promise<void>;
 };
 

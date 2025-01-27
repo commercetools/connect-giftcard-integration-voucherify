@@ -10,18 +10,8 @@ export const fieldIds = {
 const handleChangeEvent = (field: string, onValueChange?: (hasValue: boolean) => Promise<void>) => {
   const input = getInput(field);
   if (input) {
-    let hasValue = false;
-
     input.addEventListener('input', () => {
-      if (!hasValue && input.value !== '') {
-        hasValue = true;
-
-        onValueChange?.(hasValue);
-      } else if (hasValue && input.value === '') {
-        hasValue = false;
-
-        onValueChange?.(hasValue);
-      }
+      onValueChange?.(input.value !== '');
     });
   }
 

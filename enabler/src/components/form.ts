@@ -31,6 +31,8 @@ export class FormComponent extends DefaultComponent {
   constructor(opts: { giftcardOptions: GiftCardOptions; baseOptions: BaseOptions }) {
     super(opts);
     this.i18n = new I18n(translations);
+    this.balance = this.balance.bind(this);
+    this.submit = this.submit.bind(this);
   }
 
   async balance(): Promise<BalanceType> {
@@ -50,7 +52,7 @@ export class FormComponent extends DefaultComponent {
       const jsonResponse = await response.json();
       if (!jsonResponse?.status?.state) {
         this.baseOptions.onError(jsonResponse);
-        return
+        return;
       }
 
       return jsonResponse;
@@ -60,16 +62,6 @@ export class FormComponent extends DefaultComponent {
   }
 
   async submit(params: { amount?: Amount }): Promise<void> {
-    if (this.giftcardOptions?.onGiftCardSubmit) {
-      this.giftcardOptions
-        .onGiftCardSubmit()
-        .then() // Not sure at this time what we do with the response here
-        .catch((err) => {
-          this.baseOptions.onError(err);
-          throw err;
-        });
-    }
-
     try {
       const giftCardCode = getInput(fieldIds.code).value.replace(/\s/g, '');
       const requestBody = {
@@ -123,14 +115,14 @@ export class FormComponent extends DefaultComponent {
   private _getField() {
     return `
       <div class="${inputFieldStyles.wrapper}">
-        <form class="${inputFieldStyles.paymentForm}">
+        <div class="${inputFieldStyles.paymentForm}">
           <div class="${inputFieldStyles.inputContainer}">
             <label class="${inputFieldStyles.inputLabel}" for="giftcard-code">
               ${this.i18n.translate('giftCardPlaceholder', this.baseOptions.locale)} <span aria-hidden="true"> *</span>
             </label>
             <input class="${inputFieldStyles.inputField}" type="text" id="giftcard-code" name="giftCardCode" value="">
           </div>
-        </form>
+        </div>
       </div>
     `;
   }
